@@ -13,17 +13,14 @@ export const asyncGetProductById = createAsyncThunk("asyncGetProductById", async
 const productSlice = createSlice({
     name: 'index',
     initialState: initialState,
-    reducers: {
-    },
-    //getting data from api
+    reducers: {},
     extraReducers: (builder) => {
         builder.addCase(asyncGetProductById.fulfilled, (state, action) => {
             state.product = action.payload
         })
     }
-
 })
 
-export const {  } = productSlice.actions
+//export const {  } = productSlice.actions
 
 export default productSlice.reducer

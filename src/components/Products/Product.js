@@ -1,15 +1,14 @@
-import Banner from '../../Banner/Banner';
-import '../../css/style.css';
+import '../css/style.css';
+import Banner from '../Banner/Banner';
+import Loading from '../Loading/Loading';
 
 function Product(props) {
-
     return (
         <div className="container">
             <div className="row">
                 <div className="col">
                     <Banner />
-                    
-                        {props.isLoading ? null : (
+                        {props.isLoading ? (<Loading />) : (
                             <section className="catalog-item">
                                 <h2 className="text-center">{props.info.title}</h2>
                                 <div className="row">
@@ -48,24 +47,38 @@ function Product(props) {
                                         </table>
                                         <div className="text-center">
                                             <p>Размеры в наличии: 
-                                                {props.info.sizes.map((s, id) => {
-                                                    if (id === 0) {
-                                                        return (<span className="catalog-item-size selected">{s.size}</span>)
-                                                    }
-                                                    else {
-                                                        return (<span className="catalog-item-size">{s.size}</span>)
-                                                    }
-                                                })}
+                                                {props.info.sizes.map((s, id) => (
+                                                    <span className={`catalog-item-size ${props.size === id ? 'selected' : ''}`} key={id}
+                                                    onClick={() => {props.chooseSizeHandler(id)}}>{s.size}</span>
+                                                ))}
                                             </p>
                                             <p>Количество: <span className="btn-group btn-group-sm pl-2">
-                                                    <button className="btn btn-secondary">-</button>
-                                                    <span className="btn btn-outline-primary">1</span>
-                                                    <button className="btn btn-secondary">+</button>
+                                                    <button className="btn btn-secondary" onClick={() => {
+                                                        props.decrementHandler()
+                                                    }}>-</button>
+                                                    <span className="btn btn-outline-primary">{props.amountOfProd}</span>
+                                                    <button className="btn btn-secondary" onClick={() => {
+                                                        props.incrementHandler()
+                                                    }}>+</button>
                                                 </span>
                                             </p>
                                         </div>
                                         <button className="btn btn-danger btn-block btn-lg"
-                                            onClick={() => {props.addToCart(props.info.id)}}>В корзину</button>
+                                            onClick={() => {props.addProdToCart({
+                                                id: props.info.id,
+                                                size: props.size,
+                                                amount: props.amountOfProd,
+                                                title: props.info.title,
+                                                category: props.info.category,
+                                                season: props.info.season,
+                                                reason: props.info.reason,
+                                                color: props.info.color,
+                                                material: props.info.material,
+                                                manufacturer: props.info.manufacturer,
+                                                sku: props.info.sku,
+                                                price: props.info.price
+                                            })}}>
+                                        В корзину</button>
                                     </div>
                                 </div>
                             </section>

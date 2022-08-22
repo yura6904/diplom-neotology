@@ -1,7 +1,7 @@
 import Banner from '../Banner/Banner';
 import '../css/style.css';
 
-function Cart() {
+function Cart(props) {
   return (
     <div className="container">
         <div className="row">

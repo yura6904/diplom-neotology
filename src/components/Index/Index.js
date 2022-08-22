@@ -1,6 +1,7 @@
 import { NavLink } from 'react-router-dom';
 import Banner from '../Banner/Banner';
 import '../css/style.css';
+import Loading from '../Loading/Loading';
 
 function Index(props) {
   return (
@@ -30,14 +31,7 @@ function Index(props) {
                     </div>
                   </div>
                 </div>
-              )) : (
-                <div className="preloader">
-                  <span></span>
-                  <span></span>
-                  <span></span>
-                  <span></span>
-                </div>
-              )}
+              )) : (<Loading />)}
             </div>
           </section>
           <section className="catalog">
@@ -79,27 +73,13 @@ function Index(props) {
                     </div>
                   </div>
                 </div>
-              )) : (
-                <div className="preloader">
-                  <span></span>
-                  <span></span>
-                  <span></span>
-                  <span></span>
-                </div>
-              )}
+              )) : (<Loading />)}
             </div>
             <div className="text-center">
               {!props.loadingMore ? (
                 <button className="btn btn-outline-primary"
                 onClick={() => {props.downloadMoreHandler()}}>Загрузить ещё</button>
-              ) : (
-                <div className="preloader">
-                  <span></span>
-                  <span></span>
-                  <span></span>
-                  <span></span>
-                </div>
-              )}
+              ) : (<Loading />)}
               
             </div>
           </section>

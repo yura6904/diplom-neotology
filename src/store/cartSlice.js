@@ -1,8 +1,6 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
+import { createAsyncThunk, createSlice, current } from "@reduxjs/toolkit"
 
-const initialState = {
-    cart: []
-}
+const initialState = []
 
 //requests to the server
 /*export const asyncGetIndexData = createAsyncThunk("asyncGetIndexData", async () => {
@@ -14,12 +12,12 @@ const cartSlice = createSlice({
     name: 'cart',
     initialState: initialState,
     reducers: {
-        addToCart(state, action) {
-            state.cart.push(action.payload)
-        }
+        addToCart: (state, action) => 
+            void(state.push(action.payload)) //почему тут void решает проблему, я так и не понял
+        
     }
 })
 
-export const { setIndexData, setTopSales } = cartSlice.actions
+export const { addToCart } = cartSlice.actions
 
 export default cartSlice.reducer

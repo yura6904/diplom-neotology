@@ -1,15 +1,14 @@
 import { Route, Routes } from 'react-router-dom';
 import './App.css';
 import About from './components/About/About';
-import Cart from './components/Cart/Cart';
+import CartContainer from './components/Cart/CartContainer';
 import Catalog from './components/Catalog/Catalog';
 import Contacts from './components/Contacts/Contacts';
 import Footer from './components/Footer/Footer';
 import Header from './components/Header/Header';
 import IndexContainer from './components/Index/IndexContainer';
 import NotFoundError from './components/NotFoundError/NotFoundError';
-import Product from './components/Products/Product/Product';
-import Products from './components/Products/Products';
+import ProductContainer from './components/Products/ProductContainer';
 
 function App() {
   return (
@@ -19,9 +18,9 @@ function App() {
         <Route path='/catalog' element={<Catalog />}/>
         <Route path='/about' element={<About />}/>
         <Route path='/error-404' element={<NotFoundError />}/>
-        <Route path='/cart' element={<Cart />}/>
+        <Route path='/cart' element={<CartContainer />}/>
         <Route path='/contacts' element={<Contacts />}/>
-        <Route path='/products/product/:id' element={<Products />}/>
+        <Route path='/products/product/:id' element={<ProductContainer />}/>
         <Route path='/' exact element={<IndexContainer />}/>
       </Routes>
       <Footer />
@@ -30,12 +29,9 @@ function App() {
 }
 
 /** TODO: 
-  * убрать повторяющиеся элементы
   * настроить верстку
-  * убрать захардкоженные данные и сделать запросы на сервер
-  * добавить функционал на кнопки
-  * добавить функционал по добавлению классов в элементы страницы
-  * Index и IndexLoaded - загрузка
+  * добавить функционал на кнопки // почти все
+  * добавить функционал по добавлению классов в элементы страницы // почти все
 */
 
 export default App;
