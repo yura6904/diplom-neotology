@@ -6,9 +6,9 @@ import Catalog from './components/Catalog/Catalog';
 import Contacts from './components/Contacts/Contacts';
 import Footer from './components/Footer/Footer';
 import Header from './components/Header/Header';
-import Index from './components/Index/Index';
-import IndexLoaded from './components/IndexLoaded/IndexLoaded';
+import IndexContainer from './components/Index/IndexContainer';
 import NotFoundError from './components/NotFoundError/NotFoundError';
+import Product from './components/Products/Product/Product';
 import Products from './components/Products/Products';
 
 function App() {
@@ -21,8 +21,8 @@ function App() {
         <Route path='/error-404' element={<NotFoundError />}/>
         <Route path='/cart' element={<Cart />}/>
         <Route path='/contacts' element={<Contacts />}/>
-        <Route path='/products' element={<Products />}/>
-        <Route path='/' exact element={<Index />}/>
+        <Route path='/products/product/:id' element={<Products />}/>
+        <Route path='/' exact element={<IndexContainer />}/>
       </Routes>
       <Footer />
     </div>

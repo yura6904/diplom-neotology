@@ -1,3 +1,4 @@
+import Banner from '../Banner/Banner';
 import '../css/style.css';
 
 function Contacts() {
@@ -5,10 +6,7 @@ function Contacts() {
     <div className="container">
       <div className="row">
         <div className="col">
-          <div className="banner">
-            <img src="./img/banner.jpg" className="img-fluid" alt="К весне готовы!" />
-            <h2 className="banner-header">К весне готовы!</h2>
-          </div>
+          <Banner />
           <section className="top-sales">
             <h2 className="text-center">Контакты</h2>
             <p>Наш головной офис расположен в г.Москва, по адресу: Варшавское шоссе, д. 17, бизнес-центр W Plaza.</p>

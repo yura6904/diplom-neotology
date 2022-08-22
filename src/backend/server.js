@@ -24,15 +24,15 @@ const randomNumber = (start, stop) => {
 
 const fortune = (ctx, body = null, status = 200) => {
     // Uncomment for delay
-    // const delay = randomNumber(1, 10) * 1000;
-    const delay = 0;
+    const delay = randomNumber(1, 10) * 1000;
+    //const delay = 0;
     return new Promise((resolve, reject) => {
         setTimeout(() => {
             // Uncomment for error generation
-            // if (Math.random() > 0.8) {
-            //     reject(new Error('Something bad happened'));
-            //     return;
-            // }
+            if (Math.random() > 0.8) {
+                reject(new Error('Something bad happened'));
+                return;
+            }
 
             ctx.response.status = status;
             ctx.response.body = body;
@@ -75,6 +75,7 @@ router.get('/api/items', async (ctx, next) => {
 
 router.get('/api/items/:id', async (ctx, next) => {
     const id = Number(ctx.params.id);
+    console.log(id)
     const item = items.find(o => o.id === id);
     if (item === undefined) {
         return fortune(ctx, 'Not found', 404);

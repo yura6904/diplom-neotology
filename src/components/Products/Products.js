@@ -1,71 +1,32 @@
-import '../css/style.css';
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useLocation } from 'react-router';
+import { asyncGetProductById } from '../../store/productSlice';
+import Product from './Product/Product';
 
-function Products() {
-  return (
-    <div className="container">
-        <div className="row">
-            <div className="col">
-                <div className="banner">
-                    <img src=".././img/banner.jpg" className="img-fluid" alt="К весне готовы!" />
-                    <h2 className="banner-header">К весне готовы!</h2>
-                </div>
+function Products(props) {
+    const id = useLocation().state.id
+    const [loading, setLoading] = useState(true)
+    const dispatch = useDispatch()
+    const productInfo = useSelector(state => state.productData.product)
 
-                <section className="catalog-item">
-                    <h2 className="text-center">Босоножки 'MYER'</h2>
-                    <div className="row">
-                        <div className="col-5">
-                            <img src=".././img/products/sandals_myer.jpg"
-                                className="img-fluid" alt="" />
-                        </div>
-                        <div className="col-7">
-                            <table className="table table-bordered">
-                                <tbody>
-                                    <tr>
-                                        <td>Артикул</td>
-                                        <td>1000046</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Производитель</td>
-                                        <td>PAUL ANDREW</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Цвет</td>
-                                        <td>Чёрный</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Материалы</td>
-                                        <td>Кожа</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Сезон</td>
-                                        <td>Лето</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Повод</td>
-                                        <td>Прогулка</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <div className="text-center">
-                                <p>Размеры в наличии: <span className="catalog-item-size selected">18 US</span> <span className="catalog-item-size">20 US</span></p>
-                                <p>Количество: <span className="btn-group btn-group-sm pl-2">
-                                        <button className="btn btn-secondary">-</button>
-                                        <span className="btn btn-outline-primary">1</span>
-                                        <button className="btn btn-secondary">+</button>
-                                    </span>
-                                </p>
-                            </div>
-                            <button className="btn btn-danger btn-block btn-lg">В корзину</button>
-                        </div>
-                    </div>
-                </section>
-            </div>
-        </div>
-    </div>
+    useEffect(() => {
+        async function fetchData() {
+            await setLoading(true)
+            await dispatch(asyncGetProductById(id))
+            await setLoading(false)
+        }
+        fetchData()
+    }, [])
 
-  );
+
+    const addToCart = async (id) => {
+
+    }
+
+    return (
+        <Product info={productInfo} addToCart={addToCart} isLoading={loading}/>
+    );
 }
 
 export default Products;
-
-
