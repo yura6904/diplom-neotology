@@ -64,20 +64,24 @@ function Product(props) {
                                             </p>
                                         </div>
                                         <button className="btn btn-danger btn-block btn-lg"
-                                            onClick={() => {props.addProdToCart({
-                                                id: props.info.id,
-                                                size: props.size,
-                                                amount: props.amountOfProd,
-                                                title: props.info.title,
-                                                category: props.info.category,
-                                                season: props.info.season,
-                                                reason: props.info.reason,
-                                                color: props.info.color,
-                                                material: props.info.material,
-                                                manufacturer: props.info.manufacturer,
-                                                sku: props.info.sku,
-                                                price: props.info.price
-                                            })}}>
+                                            onClick={() => {
+                                                props.addProdToCart({
+                                                    id: props.info.id,
+                                                    size: props.info.sizes[props.size],
+                                                    amount: props.amountOfProd,
+                                                    title: props.info.title,
+                                                    category: props.info.category,
+                                                    season: props.info.season,
+                                                    reason: props.info.reason,
+                                                    color: props.info.color,
+                                                    material: props.info.material,
+                                                    manufacturer: props.info.manufacturer,
+                                                    sku: props.info.sku,
+                                                    price: props.info.price,
+                                                    sumPrice: props.amountOfProd * props.info.price
+                                                })
+                                                props.routeChange()
+                                            }}>
                                         В корзину</button>
                                     </div>
                                 </div>

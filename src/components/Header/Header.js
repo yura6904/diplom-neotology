@@ -1,7 +1,8 @@
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import '../css/style.css'
 
 function Header() {
+    const navigate = useNavigate()
     return (
         <div className="container">
             <div className="row">
@@ -26,7 +27,7 @@ function Header() {
                                 </li>
                             </ul>
                             <div>
-                                <div className="header-controls-pics">
+                                <div className="header-controls-pics" onClick={() => {navigate('/cart')}}>
                                     <div data-id="search-expander" className="header-controls-pic header-controls-search"></div>
                                     <div className="header-controls-pic header-controls-cart">
                                         <div className="header-controls-cart-full">1</div>
