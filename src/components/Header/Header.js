@@ -1,8 +1,10 @@
+import { useSelector } from 'react-redux';
 import { NavLink, useNavigate } from 'react-router-dom';
 import '../css/style.css'
 
 function Header() {
     const navigate = useNavigate()
+    const cartData = useSelector((state) => state.cartData)
     return (
         <div className="container">
             <div className="row">
@@ -30,7 +32,7 @@ function Header() {
                                 <div className="header-controls-pics" onClick={() => {navigate('/cart')}}>
                                     <div data-id="search-expander" className="header-controls-pic header-controls-search"></div>
                                     <div className="header-controls-pic header-controls-cart">
-                                        <div className="header-controls-cart-full">1</div>
+                                        <div className="header-controls-cart-full">{cartData.cart.length > 0 ? cartData.cart.length : null}</div>
                                         <div className="header-controls-cart-menu"></div>
                                     </div>
                                 </div>
