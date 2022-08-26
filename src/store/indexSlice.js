@@ -2,7 +2,13 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 
 const initialState = {
     data: [],
-    topSales: []
+    topSales: [],
+    categories: [
+        {
+            id: 10,
+            title: "Все"
+        },
+    ]
 }
 
 //requests to the server
@@ -17,6 +23,14 @@ export const asyncGetTopSales = createAsyncThunk("asyncGetTopSales", async () =>
 export const asyncGetMoreItems = createAsyncThunk("asyncGetMoreItems", async (skipNum) => {
     let response = await fetch(`http://localhost:7070/api/items?offset=${skipNum}`) 
     return await response.json() // почему приходит странный массив?
+})
+export const asyncGetCategoryProd = createAsyncThunk("asyncGetCategoryProd", async (categoryId) => {
+    let response = await fetch('http://localhost:7070/api/items', categoryId) 
+    return await response.json()
+})
+export const asyncGetCategories = createAsyncThunk("asyncGetCategories", async (categoryId) => {
+    let response = await fetch('http://localhost:7070/api/categories', categoryId) 
+    return await response.json()
 })
 
 const indexSlice = createSlice({
@@ -39,8 +53,23 @@ const indexSlice = createSlice({
             state.topSales = action.payload
         })
         builder.addCase(asyncGetMoreItems.fulfilled, (state, action) => {
-            state.data.push(action.payload)
-            console.log(state.data)
+            state.data = action.payload
+        })
+        builder.addCase(asyncGetCategoryProd.fulfilled, (state, action) => {
+            state.data = action.payload
+        })
+        builder.addCase(asyncGetCategories.fulfilled, (state, action) => {
+            if (state.categories.length === 1) {
+                let c = state.categories.concat(action.payload)
+                return {
+                    ...state,
+                    categories: c
+                }
+            }
+            else {
+                return {...state}
+            }
+            
         })
     }
 

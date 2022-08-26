@@ -1,9 +1,11 @@
-import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { asyncGetIndexData, asyncGetMoreItems, asyncGetCategoryProd,
-    asyncGetCategories, asyncGetTopSales } from '../../store/indexSlice';import Index from './Index';
 
-function IndexContainer() {
+import { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { asyncGetIndexData, asyncGetMoreItems,asyncGetCategoryProd,
+        asyncGetCategories } from '../../store/indexSlice';
+import CatalogPage from './CatalogPage';
+
+function CatalogContainer() {
     const [loading, setLoading] = useState(true)
     const [loadingMore, setLoadingMore] = useState(false)
 
@@ -15,15 +17,11 @@ function IndexContainer() {
         getCategories()
     }, [])
 
-    const getAll = async () => {
-        await setLoading(true)
-        await dispatch(asyncGetIndexData())
-        await dispatch(asyncGetTopSales())
-        await setLoading(false)
-    }
-
     const getCategories = async () => {
         await dispatch(asyncGetCategories())
+    }
+    const getAll = async () => {
+        await dispatch(asyncGetIndexData())
     }
 
     const downLoadProdHandler = async (title, id) => {
@@ -41,14 +39,16 @@ function IndexContainer() {
         await dispatch(asyncGetMoreItems(indexData.data.length))
         await setLoadingMore(false)
     }
-    
+
     return (
-        <Index data={indexData} isLoading={loading} loadingMore={loadingMore} 
-            downloadMoreHandler={downloadMoreHandler} downLoadProdHandler={downLoadProdHandler}
+        <CatalogPage data={indexData} isLoading={loading} loadingMore={loadingMore} 
+            downLoadProdHandler={downLoadProdHandler} downloadMoreHandler={downloadMoreHandler}
             categories={indexData.categories} />
     );
 }
 
-export default IndexContainer;
+export default CatalogContainer;
+
+
 
 

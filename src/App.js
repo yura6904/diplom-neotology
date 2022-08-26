@@ -2,7 +2,7 @@ import { Route, Routes } from 'react-router-dom';
 import './App.css';
 import About from './components/About/About';
 import CartContainer from './components/Cart/CartContainer';
-import Catalog from './components/Catalog/Catalog';
+import CatalogContainer from './components/Catalog/CatalogContainer';
 import Contacts from './components/Contacts/Contacts';
 import Footer from './components/Footer/Footer';
 import Header from './components/Header/Header';
@@ -15,7 +15,7 @@ function App() {
     <div className="App">
       <Header />
       <Routes>
-        <Route path='/catalog' element={<Catalog />}/>
+        <Route path='/catalog' element={<CatalogContainer />}/>
         <Route path='/about' element={<About />}/>
         <Route path='/error-404' element={<NotFoundError />}/>
         <Route path='/cart' element={<CartContainer />}/>

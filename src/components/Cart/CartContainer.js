@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { asyncFormOrder, deleteProdFromOrder } from '../../store/cartSlice';
+import { asyncFormOrder, deleteProdFromOrder, formOrder } from '../../store/cartSlice';
 import Cart from './Cart';
 
 function CartContainer() {
@@ -13,26 +13,30 @@ function CartContainer() {
     const dispatch = useDispatch()
 
     useEffect(() => {
+        let price = 0
         cartData.cart.map((p, id) => {
-            setSumPrice(sumPrice + p.sumPrice)
+            price += p.sumPrice
         })
+        setSumPrice(price)
     }, [])
 
     const formNewOrderHandler = () => {
-        let newOrder = []
-        newOrder.push({
-            ids: [cartData.cart.map((c, id) => c.id)],
-            sumPrice: sumPrice
-        })
         let fullOrder = {
-            products: newOrder,
-            userInfo: {
-                telephone: userTelephone,
-                address: userAddress,
-                agreement: userAgreement
-            }
+            owner: { 
+                phone: userTelephone, 
+                address: userAddress
+            }, 
+            items:[]
         }
-        dispatch(asyncFormOrder(newOrder))
+        cartData.cart.map((p ,id) => {
+            fullOrder.items.push({
+                id: p.id,
+                price: p.price,
+                count: p.amount
+            })
+        })
+        dispatch(formOrder(fullOrder))
+        dispatch(asyncFormOrder(fullOrder))
     }
     const deleteHandler = (id) => {
         dispatch(deleteProdFromOrder(id))
