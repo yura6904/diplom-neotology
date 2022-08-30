@@ -8,16 +8,21 @@ const initialState = {
             address: ''
         }, 
         items:[]
-    }
+    },
+    cartCount: 0
 }
-//TODO: { owner: { phone, address }, items }
-//requests to the server
-export const asyncFormOrder = createAsyncThunk("asyncFormOrder", async () => {
-    //save to the local storage
-     console.log('ordering')
 
-    //let response = await fetch('http://localhost:7070/api/items') 
-    //return await response.json()
+//requests to the server
+export const asyncFormOrder = createAsyncThunk("asyncFormOrder", async (order) => {
+    let response = await fetch('http://localhost:7070/api/order', {
+        method: 'POST',
+        body: JSON.stringify(order),
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+    }) 
+    return await response.json()
 })
 
 const cartSlice = createSlice({
@@ -27,7 +32,8 @@ const cartSlice = createSlice({
         addToCart: (state, action) => {
             return {
                 ...state,
-                cart: state.cart.concat(action.payload)
+                cart: state.cart.concat(action.payload),
+                cartCount: window.localStorage.length
             }
             //void(state.cart.push(action.payload)) //почему тут void решает проблему, я так и не понял
         },

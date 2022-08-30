@@ -1,3 +1,4 @@
+import { NavLink } from 'react-router-dom';
 import Banner from '../Banner/Banner';
 import '../css/style.css';
 
@@ -22,22 +23,29 @@ function Cart(props) {
                         </tr>
                     </thead>
                     <tbody>
-                        {props.cartData.cart.map((p, id) => (
+                        {props.cartData.length ? props.cartData.map((p, id) => p ? (
                             <tr key={id}>
                                 <td scope="row">{id+1}</td>
-                                <td><a href="/products/1.html">{p.title}</a></td>
+                                <td><NavLink to={`/products/product/${p.id}`}>{p.title}</NavLink></td>
                                 <td>{p.size.size}</td>
-                                <td>{p.amount}</td>
+                                <td>{p.count}</td>
                                 <td>{p.price}</td>
-                                <td>{p.sumPrice}</td>
+                                <td>{p.price*p.count}</td>
                                 <td><button className="btn btn-outline-danger btn-sm"
-                                onClick={() => {props.deleteHandler(id)}}>Удалить</button></td>
+                                onClick={() => {props.deleteHandler(id, p.id)}}>Удалить</button></td>
                             </tr>
 
-                        ))}
+                        ) : (
+                            <tr>
+                                <td>Корзина пуста.</td>
+                            </tr>)
+                        ) : <tr>
+                                <td>Корзина пуста.</td>
+                            </tr>
+                        }
                         <tr>
                             <td colSpan="5" className="text-right">Общая стоимость</td>
-                            <td>{props.cartData.cart.length > 0 ? props.sumPrice : 0}</td>
+                            <td>{props.cartData.length > 0 ? props.sumPrice : 0}</td>
                         </tr>
                         
                     </tbody>

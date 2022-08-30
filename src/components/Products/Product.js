@@ -68,7 +68,7 @@ function Product(props) {
                                                 props.addProdToCart({
                                                     id: props.info.id,
                                                     size: props.info.sizes[props.size],
-                                                    amount: props.amountOfProd,
+                                                    count: props.amountOfProd,
                                                     title: props.info.title,
                                                     category: props.info.category,
                                                     season: props.info.season,

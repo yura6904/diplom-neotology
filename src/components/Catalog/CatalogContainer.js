@@ -3,12 +3,14 @@ import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { asyncGetIndexData, asyncGetMoreItems,asyncGetCategoryProd,
         asyncGetCategories } from '../../store/indexSlice';
+import { asyncFindProductByStr } from '../../store/indexSlice';
 import CatalogPage from './CatalogPage';
 
 function CatalogContainer() {
     const [loading, setLoading] = useState(true)
     const [loadingMore, setLoadingMore] = useState(false)
-
+    const [searchStr, setSearchStr] = useState('') //закинуть значение в контекст
+    
     const dispatch = useDispatch() 
     const indexData = useSelector((state) => state.indexData)
 
@@ -29,21 +31,30 @@ function CatalogContainer() {
         
         if (title !== 'Все')
             await dispatch(asyncGetCategoryProd(id))
-        else dispatch(asyncGetIndexData())
+        else await dispatch(asyncGetIndexData())
         
         await setLoading(false)
     }
 
     const downloadMoreHandler = async () => {
-        await setLoadingMore(true)
+        await setLoading(true)
         await dispatch(asyncGetMoreItems(indexData.data.length))
-        await setLoadingMore(false)
+        await setLoading(false)
+    }
+
+    const onChangeSearch = (evt) => {
+        setSearchStr(evt.target.value)
+    }
+    const findItem  = async (evt) => {
+        if (evt.key === 'Enter')
+            await dispatch(asyncFindProductByStr(searchStr))
     }
 
     return (
         <CatalogPage data={indexData} isLoading={loading} loadingMore={loadingMore} 
             downLoadProdHandler={downLoadProdHandler} downloadMoreHandler={downloadMoreHandler}
-            categories={indexData.categories} />
+            categories={indexData.categories} onChangeSearch={onChangeSearch}
+            findItem={findItem} searchStr={searchStr}/>
     );
 }
 

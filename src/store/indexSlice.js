@@ -12,25 +12,96 @@ const initialState = {
 }
 
 //requests to the server
+/*const fetchRequest = async (url) => {
+    let data = []
+    let error = ''
+    try {
+        let response = await fetch('http://localhost:7070/api/top-sales')
+        data = await response.json()
+    } catch (e) {
+        error = e
+        let reload = window.confirm('Что-то пошло не так, перезагурзить страницу?')
+        reload ? window.location.reload() : window.location.reload()
+    }
+     
+    return data
+}*/
+
+    
+// почему вызов функции fetchRequest ^^ не работает?
 export const asyncGetIndexData = createAsyncThunk("asyncGetIndexData", async () => {
-    let response = await fetch('http://localhost:7070/api/items') 
-    return await response.json()
+    let data = []
+    let error = ''
+    try {
+        let response = await fetch('http://localhost:7070/api/items')
+        data = await response.json()
+    } catch (e) {
+        error = e
+        let reload = window.confirm('Что-то пошло не так, перезагурзить страницу?')
+        reload ? window.location.reload() : window.close() //почему не работает window.close()
+    }
+     
+    return await data
 })
 export const asyncGetTopSales = createAsyncThunk("asyncGetTopSales", async () => {
-    let response = await fetch('http://localhost:7070/api/top-sales') 
-    return await response.json()
+    let data = []
+    let error = ''
+    try {
+        let response = await fetch('http://localhost:7070/api/top-sales')
+        data = await response.json()
+    } catch (e) {
+        error = e
+        let reload = window.confirm('Что-то пошло не так, перезагурзить страницу?')
+        reload ? window.location.reload() : window.close()
+    }
+     
+    return await data
 })
 export const asyncGetMoreItems = createAsyncThunk("asyncGetMoreItems", async (skipNum) => {
-    let response = await fetch(`http://localhost:7070/api/items?offset=${skipNum}`) 
-    return await response.json() // почему приходит странный массив?
+    let data = []
+    let error = ''
+    try {
+        let response = await fetch(`http://localhost:7070/api/items?offset=${skipNum}`)
+        data = await response.json()
+    } catch (e) {
+        error = e
+        let reload = window.confirm('Что-то пошло не так, перезагурзить страницу?')
+        reload ? window.location.reload() : window.close()
+    }
+     
+    return await data
 })
-export const asyncGetCategoryProd = createAsyncThunk("asyncGetCategoryProd", async (categoryId) => {
-    let response = await fetch('http://localhost:7070/api/items', categoryId) 
-    return await response.json()
+export const asyncGetCategoryProd = createAsyncThunk("asyncGetCategoryProd", async (id) => {
+    let data = []
+    let error = ''
+    try {
+        let response = await fetch(`http://localhost:7070/api/items?categoryId=${id}`)
+        data = await response.json()
+    } catch (e) {
+        error = e
+        let reload = window.confirm('Что-то пошло не так, перезагурзить страницу?')
+        reload ? window.location.reload() : window.close()
+    }
+     
+    return await data
 })
-export const asyncGetCategories = createAsyncThunk("asyncGetCategories", async (categoryId) => {
-    let response = await fetch('http://localhost:7070/api/categories', categoryId) 
-    return await response.json()
+export const asyncGetCategories = createAsyncThunk("asyncGetCategories", async () => {
+    let data = []
+    let error = ''
+    try {
+        let response = await fetch('http://localhost:7070/api/categories')
+        data = await response.json()
+    } catch (e) {
+        error = e
+        let reload = window.confirm('Что-то пошло не так, перезагурзить страницу?')
+        reload ? window.location.reload() : window.close()
+    }
+     
+    return await data
+})
+export const asyncFindProductByStr = createAsyncThunk("asyncFindProductByStr", async (id) => {
+    //let response = await fetch(`http://localhost:7070/api/items/`)
+    //return await response.json()
 })
 
 const indexSlice = createSlice({
@@ -47,13 +118,19 @@ const indexSlice = createSlice({
     //getting data from api
     extraReducers: (builder) => {
         builder.addCase(asyncGetIndexData.fulfilled, (state, action) => {
+            console.log(action.payload)
             state.data = action.payload
         })
         builder.addCase(asyncGetTopSales.fulfilled, (state, action) => {
             state.topSales = action.payload
         })
         builder.addCase(asyncGetMoreItems.fulfilled, (state, action) => {
-            state.data = action.payload
+            let newData = state.data.concat(action.payload)
+            return {
+                ...state,
+                data: newData
+            }
+            
         })
         builder.addCase(asyncGetCategoryProd.fulfilled, (state, action) => {
             state.data = action.payload
@@ -70,6 +147,9 @@ const indexSlice = createSlice({
                 return {...state}
             }
             
+        })
+        builder.addCase(asyncFindProductByStr.fulfilled, (state, action) => {
+            state.data = action.payload
         })
     }
 

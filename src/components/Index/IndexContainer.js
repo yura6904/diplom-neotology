@@ -31,7 +31,7 @@ function IndexContainer() {
         
         if (title !== 'Все')
             await dispatch(asyncGetCategoryProd(id))
-        else dispatch(asyncGetIndexData())
+        else await dispatch(asyncGetIndexData())
         
         await setLoading(false)
     }

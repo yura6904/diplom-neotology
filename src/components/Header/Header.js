@@ -1,10 +1,14 @@
-import { useSelector } from 'react-redux';
+import { useEffect, useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import '../css/style.css'
 
 function Header() {
     const navigate = useNavigate()
-    const cartData = useSelector((state) => state.cartData)
+    const [cartOrderCount, setCartOrderCount] = useState(0)
+    //TODO: remake
+    useEffect(() => {
+        setCartOrderCount(window.localStorage.length)
+    },[])
     return (
         <div className="container">
             <div className="row">
@@ -32,7 +36,7 @@ function Header() {
                                 <div className="header-controls-pics" onClick={() => {navigate('/cart')}}>
                                     <div data-id="search-expander" className="header-controls-pic header-controls-search"></div>
                                     <div className="header-controls-pic header-controls-cart">
-                                        <div className="header-controls-cart-full">{cartData.cart.length > 0 ? cartData.cart.length : null}</div>
+                                        <div className="header-controls-cart-full">{cartOrderCount}</div>
                                         <div className="header-controls-cart-menu"></div>
                                     </div>
                                 </div>
