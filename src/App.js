@@ -1,4 +1,4 @@
-import { createContext, useContext } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import './App.css';
 import About from './components/About/About';
@@ -11,13 +11,18 @@ import IndexContainer from './components/Index/IndexContainer';
 import NotFoundError from './components/NotFoundError/NotFoundError';
 import ProductContainer from './components/Products/ProductContainer';
 
+export const CountCartContext = createContext()
+
 function App() {
-  const searchStr = ''
-  const SearchContext = createContext(searchStr)
-  //вынести значение строки поиска сюда
+  const [countCart, setCountCart] = useState(0)
+
+  const changeCount = () => {
+    setCountCart(window.localStorage.length)
+  }
+
   return (
     <div className="App">
-      <SearchContext.Provider value={searchStr}>
+      <CountCartContext.Provider value={{countCart, changeCount}}>
         <Header />
         <Routes>
           <Route path='/catalog' element={<CatalogContainer />}/>
@@ -29,16 +34,14 @@ function App() {
           <Route path='/' exact element={<IndexContainer />}/>
         </Routes>
         <Footer />
-      </SearchContext.Provider>
+      </CountCartContext.Provider>
       
     </div>
   );
 }
 
 /** TODO: 
-  * настроить цифру на корзине
   * настроить верстку
-  * сообщение об ошибках загрузки данных +-
   * оформление заказа проблема с запросом
   * поиск
 */

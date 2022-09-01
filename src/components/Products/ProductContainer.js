@@ -30,12 +30,21 @@ function ProductContainer(props) {
         dispatch(addToCart(prod))
         let newProd = {...prod}
         for (let i = 0; i < window.localStorage.length; i++) {
-            if (prod.id === (JSON.parse(window.localStorage.getItem(window.localStorage.key(i))).id)) {
-                newProd.amount = JSON.parse(window.localStorage.getItem(window.localStorage.key(i))).amount + prod.amount
-                window.localStorage.removeItem(window.localStorage.key(i))
+            let item = JSON.parse(window.localStorage.getItem(window.localStorage.key(i)))
+
+            if (prod.id === (item.id)) {
+                if (prod.size.size === item.size.size) {
+                    newProd.count = item.count + prod.count
+                    window.localStorage.removeItem(window.localStorage.key(i))
+                    break
+                }
+                else {
+                    break
+                }
+
             }
         }
-        window.localStorage.setItem(`prod-${prod.id}`, JSON.stringify(newProd))
+        window.localStorage.setItem(`prod-${prod.id}-size-${prod.size.size}`, JSON.stringify(newProd))
     }
     const chooseSizeHandler = (prod) => {
         setSize(prod)

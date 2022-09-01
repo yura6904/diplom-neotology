@@ -23,25 +23,26 @@ function Cart(props) {
                         </tr>
                     </thead>
                     <tbody>
-                        {props.cartData.length ? props.cartData.map((p, id) => p ? (
-                            <tr key={id}>
-                                <td scope="row">{id+1}</td>
-                                <td><NavLink to={`/products/product/${p.id}`}>{p.title}</NavLink></td>
-                                <td>{p.size.size}</td>
-                                <td>{p.count}</td>
-                                <td>{p.price}</td>
-                                <td>{p.price*p.count}</td>
-                                <td><button className="btn btn-outline-danger btn-sm"
-                                onClick={() => {props.deleteHandler(id, p.id)}}>Удалить</button></td>
-                            </tr>
-
-                        ) : (
-                            <tr>
-                                <td>Корзина пуста.</td>
-                            </tr>)
-                        ) : <tr>
-                                <td>Корзина пуста.</td>
-                            </tr>
+                        {
+                            props.cartData ? 
+                                props.cartData[0] !== null ? 
+                                    props.cartData.length > 0 ? props.cartData.map(
+                                        (p, id) =>
+                                            <tr key={id}>
+                                                <td scope="row">{id+1}</td>
+                                                <td><NavLink to={`/products/product/${p.id}`}>{p.title}</NavLink></td>
+                                                <td>{p.size.size}</td>
+                                                <td>{p.count}</td>
+                                                <td>{p.price}</td>
+                                                <td>{p.price*p.count}</td>
+                                                <td><button className="btn btn-outline-danger btn-sm"
+                                                onClick={() => {props.deleteHandler(id, p.id, p.size.size)}}>Удалить</button></td>
+                                            </tr>
+                                    ) : (<tr>
+                                            <td>Корзина пуста.</td>
+                                        </tr>)
+                                : null
+                            : null 
                         }
                         <tr>
                             <td colSpan="5" className="text-right">Общая стоимость</td>

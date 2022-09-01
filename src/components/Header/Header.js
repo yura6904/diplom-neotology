@@ -1,14 +1,17 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
+import { CountCartContext } from '../../App';
 import '../css/style.css'
 
 function Header() {
     const navigate = useNavigate()
-    const [cartOrderCount, setCartOrderCount] = useState(0)
-    //TODO: remake
+    
+    const {countCart, changeCount} = useContext(CountCartContext)
+
     useEffect(() => {
-        setCartOrderCount(window.localStorage.length)
-    },[])
+        changeCount(window.localStorage.length)
+    })
+
     return (
         <div className="container">
             <div className="row">
@@ -33,10 +36,10 @@ function Header() {
                                 </li>
                             </ul>
                             <div>
-                                <div className="header-controls-pics" onClick={() => {navigate('/cart')}}>
+                                <div className="header-controls-pics" >
                                     <div data-id="search-expander" className="header-controls-pic header-controls-search"></div>
-                                    <div className="header-controls-pic header-controls-cart">
-                                        <div className="header-controls-cart-full">{cartOrderCount}</div>
+                                    <div className="header-controls-pic header-controls-cart" onClick={() => {navigate('/cart')}}>
+                                        <div className="header-controls-cart-full" style={{display: countCart === 0 ? 'none' : 'block'}}>{countCart}</div>
                                         <div className="header-controls-cart-menu"></div>
                                     </div>
                                 </div>
