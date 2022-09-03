@@ -1,8 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 
 const initialState = {
-    product: {},
-    searchStr: ''
+    product: {}
 }
 
 //requests to the server

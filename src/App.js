@@ -15,14 +15,18 @@ export const CountCartContext = createContext()
 
 function App() {
   const [countCart, setCountCart] = useState(0)
+  const [searchProdStr, setSearchProdStr] = useState('')
 
   const changeCount = () => {
     setCountCart(window.localStorage.length)
   }
+  const changeSearchProd = (str) => {
+    setSearchProdStr(str)
+  }
 
   return (
     <div className="App">
-      <CountCartContext.Provider value={{countCart, changeCount}}>
+      <CountCartContext.Provider value={{countCart, searchProdStr, changeCount, changeSearchProd}}>
         <Header />
         <Routes>
           <Route path='/catalog' element={<CatalogContainer />}/>

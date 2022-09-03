@@ -11,8 +11,8 @@ function CatalogPage(props) {
                 <h2 className="text-center">Каталог</h2>
                 <form className="catalog-search-form form-inline">
                     <input className="form-control" placeholder={props.searchStr === "" ? "Поиск" : props.searchStr}
-                      onChange={(evt) => {props.onChangeSearch(evt)}}
-                      onKeyDown={ evt => props.findItem(evt)} />
+                      onChange={evt => props.onChangeSearch(evt)}
+                      onKeyDown={evt => props.findItem(evt)} />
                 </form>
                 <Catalog data={props.data} isLoading={props.loading} loadingMore={props.loadingMore} 
                     downloadMoreHandler={props.downloadMoreHandler} downLoadProdHandler={props.downLoadProdHandler}

@@ -8,7 +8,8 @@ const initialState = {
             id: 10,
             title: "Все"
         },
-    ]
+    ],
+    searchStr: ''
 }
 
 //requests to the server
@@ -99,9 +100,10 @@ export const asyncGetCategories = createAsyncThunk("asyncGetCategories", async (
      
     return await data
 })
-export const asyncFindProductByStr = createAsyncThunk("asyncFindProductByStr", async (id) => {
-    //let response = await fetch(`http://localhost:7070/api/items/`)
-    //return await response.json()
+//проблемный поиск
+export const asyncGetProductBySearch = createAsyncThunk("asyncGetProductBySearch", async (str) => {
+    let response = await fetch(`http://localhost:7070/api/items?q=${str}`)
+    return await response.json()
 })
 
 const indexSlice = createSlice({
@@ -114,6 +116,9 @@ const indexSlice = createSlice({
         setTopSales(state, action) {
             state.topSales = action.payload
         },
+        setSearchStr (state, action) {
+            state.searchStr = action.payload
+        }
     },
     //getting data from api
     extraReducers: (builder) => {
@@ -148,7 +153,8 @@ const indexSlice = createSlice({
             }
             
         })
-        builder.addCase(asyncFindProductByStr.fulfilled, (state, action) => {
+        //проблемный поиск
+        builder.addCase(asyncGetProductBySearch.fulfilled, (state, action) => {
             state.data = action.payload
         })
     }

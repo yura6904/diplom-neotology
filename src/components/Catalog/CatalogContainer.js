@@ -1,15 +1,16 @@
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { CountCartContext } from '../../App';
 import { asyncGetIndexData, asyncGetMoreItems,asyncGetCategoryProd,
         asyncGetCategories } from '../../store/indexSlice';
-import { asyncFindProductByStr } from '../../store/indexSlice';
+import { asyncGetProductBySearch } from '../../store/indexSlice';
 import CatalogPage from './CatalogPage';
 
 function CatalogContainer() {
     const [loading, setLoading] = useState(true)
     const [loadingMore, setLoadingMore] = useState(false)
-    const [searchStr, setSearchStr] = useState('') //закинуть значение в контекст
+    const {countCart, searchProdStr, changeCount, changeSearchProd} = useContext(CountCartContext)
     
     const dispatch = useDispatch() 
     const indexData = useSelector((state) => state.indexData)
@@ -43,18 +44,19 @@ function CatalogContainer() {
     }
 
     const onChangeSearch = (evt) => {
-        setSearchStr(evt.target.value)
+        changeSearchProd(evt.target.value)
     }
+    //проблемный поиск
     const findItem  = async (evt) => {
-        if (evt.key === 'Enter')
-            await dispatch(asyncFindProductByStr(searchStr))
+        if (evt.key === 'Enter'){
+            await dispatch(asyncGetProductBySearch(searchProdStr))}
     }
 
     return (
         <CatalogPage data={indexData} isLoading={loading} loadingMore={loadingMore} 
             downLoadProdHandler={downLoadProdHandler} downloadMoreHandler={downloadMoreHandler}
             categories={indexData.categories} onChangeSearch={onChangeSearch}
-            findItem={findItem} searchStr={searchStr}/>
+            findItem={findItem} searchStr={searchProdStr}/>
     );
 }
 
