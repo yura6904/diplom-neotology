@@ -13,6 +13,7 @@ function CartContainer() {
     const [userAddress, setUserAddress] = useState()
     const [userAgreement, setUserAgreement] = useState(false)
     const [cartProducts, setCartProducts] = useState([])
+    const [warnings, setWarnings] = useState([])
     const dispatch = useDispatch()
 
     const {countCart, changeCount} = useContext(CountCartContext)
@@ -20,8 +21,10 @@ function CartContainer() {
     useEffect(() => {
         //одиночные запросы на серввер гет по ид из локалсторедж
         getProductsFromServer()
+        let warns = checkActualData()
+        setWarnings(warns)
     }, [])
-    
+
     useEffect(() => {
         changeCount(window.localStorage.length)
     })
@@ -45,6 +48,16 @@ function CartContainer() {
             setSumPrice(0)
         }
         setCartProducts(prods)
+    }
+    //проверка на соответствие инфы
+    const checkActualData = () => {
+        let changesWarning = []
+        for (let i = 0; i < window.localStorage.length; i++) {
+            let localProdFromOrder = JSON.parse(window.localStorage.getItem(window.localStorage.key(i)))
+            if (cartProducts[i].price !== localProdFromOrder.price)
+                changesWarning.push(`Цена товар ${cartProducts[i].title} поменялась, актуальная цена - ${cartProducts[i].price}`)
+            return changesWarning
+        }
     }
     const formNewOrderHandler = () => {
         let items = []
@@ -96,7 +109,7 @@ function CartContainer() {
     }
 
     return (
-        <Cart cartData={cartProducts ? cartProducts : []} sumPrice={sumPrice}
+        <Cart cartData={cartProducts ? cartProducts : []} sumPrice={sumPrice} warnings={warnings}
             formNewOrderHandler={formNewOrderHandler} deleteHandler={deleteHandler}
             onChangeTelephoneInput={onChangeTelephoneInput} onChangeAdressInput={onChangeAdressInput}
             onChangeAgreementInput={onChangeAgreementInput} userAgreement={userAgreement} />

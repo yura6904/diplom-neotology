@@ -10,6 +10,15 @@ function Cart(props) {
             <Banner />
             <section className="cart">
                 <h2 className="text-center">Корзина</h2>
+                {props.warnings.length > 0 ? (
+                    <div>
+                        <h4>Изменения информации:</h4>
+                        {props.warnings.map((w, id) => (
+                            <p>{w}</p>
+                        ))}
+                    </div>
+                    
+                ) : null}
                 <table className="table table-bordered">
                     <thead>
                         <tr>
