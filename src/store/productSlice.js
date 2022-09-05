@@ -10,8 +10,6 @@ export const asyncGetProductById = createAsyncThunk("asyncGetProductById", async
     let response = await fetchRequest(`http://localhost:7070/api/items/${id}`)
     return response
 })
-//TODO
-
 
 const productSlice = createSlice({
     name: 'index',
