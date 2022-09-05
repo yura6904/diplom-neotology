@@ -38,7 +38,8 @@ function IndexContainer() {
 
     const downloadMoreHandler = async () => {
         await setLoadingMore(true)
-        await dispatch(asyncGetMoreItems(indexData.data.length))
+        console.log('downloadMoreHandler index:', indexData.activeCategory)
+        await dispatch(asyncGetMoreItems({skipNum: indexData.data.length, categoryId: indexData.activeCategory}))
         await setLoadingMore(false)
     }
     

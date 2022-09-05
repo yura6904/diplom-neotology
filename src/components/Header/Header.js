@@ -73,7 +73,7 @@ function Header() {
                                             display: inputDisplay ? 'none' : 'block',
                                             backgroundColor: 'red',
                                             color: 'red'
-                                        }}/>
+                                    }}/>
                                 </form>
                             </div>
                         </div>

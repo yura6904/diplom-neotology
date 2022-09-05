@@ -10,7 +10,7 @@ function Catalog(props) {
                 <li className="nav-item" key={id}>
                     <span className="nav-link active" href="#"
                         onClick={() => {
-                            props.downLoadProdHandler(el.title, el.id)
+                            props.downLoadCategoriesHandler(el.title, el.id)
                         }}>{el.title}</span>
                 </li>
             ))}    

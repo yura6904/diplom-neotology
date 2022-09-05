@@ -1,109 +1,44 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
+import { fetchRequest } from "./fetchRequest"
 
 const initialState = {
     data: [],
     topSales: [],
     categories: [
         {
-            id: 10,
+            id: 0,
             title: "Все"
         },
     ],
-    searchStr: ''
+    searchStr: '',
+    activeCategory: 0
 }
 
 //requests to the server
-/*const fetchRequest = async (url) => {
-    let data = []
-    let error = ''
-    try {
-        let response = await fetch('http://localhost:7070/api/top-sales')
-        data = await response.json()
-    } catch (e) {
-        error = e
-        let reload = window.confirm('Что-то пошло не так, перезагурзить страницу?')
-        reload ? window.location.reload() : window.location.reload()
-    }
-     
-    return data
-}*/
-
     
-// почему вызов функции fetchRequest ^^ не работает?
-export const asyncGetIndexData = createAsyncThunk("asyncGetIndexData", async () => {
-    let data = []
-    let error = ''
-    try {
-        let response = await fetch('http://localhost:7070/api/items')
-        data = await response.json()
-    } catch (e) {
-        error = e
-        let reload = window.confirm('Что-то пошло не так, перезагурзить страницу?')
-        reload ? window.location.reload() : window.close() //почему не работает window.close()
-    }
-     
-    return await data
+export const asyncGetIndexData = createAsyncThunk("asyncGetIndexData", async (categoryId=0) => {
+    let response = await fetchRequest(`http://localhost:7070/api/items?categoryId=${categoryId}`)
+    return await response
 })
 export const asyncGetTopSales = createAsyncThunk("asyncGetTopSales", async () => {
-    let data = []
-    let error = ''
-    try {
-        let response = await fetch('http://localhost:7070/api/top-sales')
-        data = await response.json()
-    } catch (e) {
-        error = e
-        let reload = window.confirm('Что-то пошло не так, перезагурзить страницу?')
-        reload ? window.location.reload() : window.close()
-    }
-     
-    return await data
+    let response = await fetchRequest('http://localhost:7070/api/top-sales')
+    return await response
 })
-export const asyncGetMoreItems = createAsyncThunk("asyncGetMoreItems", async (skipNum) => {
-    let data = []
-    let error = ''
-    try {
-        let response = await fetch(`http://localhost:7070/api/items?offset=${skipNum}`)
-        data = await response.json()
-    } catch (e) {
-        error = e
-        let reload = window.confirm('Что-то пошло не так, перезагурзить страницу?')
-        reload ? window.location.reload() : window.close()
-    }
-     
-    return await data
+export const asyncGetMoreItems = createAsyncThunk("asyncGetMoreItems", async (params) => {
+    let response = await fetchRequest(`http://localhost:7070/api/items?offset=${params.skipNum}&categoryId=${params.categoryId}`)
+    return await response
 })
 export const asyncGetCategoryProd = createAsyncThunk("asyncGetCategoryProd", async (id) => {
-    let data = []
-    let error = ''
-    try {
-        let response = await fetch(`http://localhost:7070/api/items?categoryId=${id}`)
-        data = await response.json()
-    } catch (e) {
-        error = e
-        let reload = window.confirm('Что-то пошло не так, перезагурзить страницу?')
-        reload ? window.location.reload() : window.close()
-    }
-     
-    return await data
+    let response = await fetchRequest(`http://localhost:7070/api/items?categoryId=${id}`)
+    return await response
 })
 export const asyncGetCategories = createAsyncThunk("asyncGetCategories", async () => {
-    let data = []
-    let error = ''
-    try {
-        let response = await fetch('http://localhost:7070/api/categories')
-        data = await response.json()
-    } catch (e) {
-        error = e
-        let reload = window.confirm('Что-то пошло не так, перезагурзить страницу?')
-        reload ? window.location.reload() : window.close()
-    }
-     
-    return await data
+    let response = await fetchRequest('http://localhost:7070/api/categories')
+    return await response
 })
-//проблемный поиск
 export const asyncGetProductBySearch = createAsyncThunk("asyncGetProductBySearch", async (str) => {
-    let response = await fetch(`http://localhost:7070/api/items?q=${str}`)
-    return await response.json()
+    let response = fetchRequest(`http://localhost:7070/api/items?q=${str}`)
+    return await response
 })
 
 const indexSlice = createSlice({
@@ -118,12 +53,14 @@ const indexSlice = createSlice({
         },
         setSearchStr (state, action) {
             state.searchStr = action.payload
+        },
+        setActiveCategory (state, action) {
+            state.activeCategory = action.payload
         }
     },
     //getting data from api
     extraReducers: (builder) => {
         builder.addCase(asyncGetIndexData.fulfilled, (state, action) => {
-            console.log(action.payload)
             state.data = action.payload
         })
         builder.addCase(asyncGetTopSales.fulfilled, (state, action) => {
@@ -153,7 +90,6 @@ const indexSlice = createSlice({
             }
             
         })
-        //проблемный поиск
         builder.addCase(asyncGetProductBySearch.fulfilled, (state, action) => {
             state.data = action.payload
         })
@@ -161,6 +97,6 @@ const indexSlice = createSlice({
 
 })
 
-export const { setIndexData, setTopSales } = indexSlice.actions
+export const { setIndexData, setTopSales, setActiveCategory } = indexSlice.actions
 
 export default indexSlice.reducer

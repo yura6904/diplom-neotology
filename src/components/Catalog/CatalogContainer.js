@@ -3,7 +3,8 @@ import { useState, useEffect, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { CountCartContext } from '../../App';
 import { asyncGetIndexData, asyncGetMoreItems,asyncGetCategoryProd,
-        asyncGetCategories } from '../../store/indexSlice';
+        asyncGetCategories, 
+        setActiveCategory} from '../../store/indexSlice';
 import { asyncGetProductBySearch } from '../../store/indexSlice';
 import CatalogPage from './CatalogPage';
 
@@ -24,12 +25,12 @@ function CatalogContainer() {
         await dispatch(asyncGetCategories())
     }
     const getAll = async () => {
-        await dispatch(asyncGetIndexData())
+        await dispatch(asyncGetIndexData(indexData.categoryId))
     }
 
-    const downLoadProdHandler = async (title, id) => {
+    const downLoadCategoriesHandler = async (title, id) => {
+        dispatch(setActiveCategory(id))
         await setLoading(true)
-        
         if (title !== 'Все')
             await dispatch(asyncGetCategoryProd(id))
         else await dispatch(asyncGetIndexData())
@@ -39,7 +40,7 @@ function CatalogContainer() {
 
     const downloadMoreHandler = async () => {
         await setLoading(true)
-        await dispatch(asyncGetMoreItems(indexData.data.length))
+        await dispatch(asyncGetMoreItems({skipNum: indexData.data.length, categoryId: indexData.activeCategory}))
         await setLoading(false)
     }
 
@@ -54,7 +55,7 @@ function CatalogContainer() {
 
     return (
         <CatalogPage data={indexData} isLoading={loading} loadingMore={loadingMore} 
-            downLoadProdHandler={downLoadProdHandler} downloadMoreHandler={downloadMoreHandler}
+        downLoadCategoriesHandler={downLoadCategoriesHandler} downloadMoreHandler={downloadMoreHandler}
             categories={indexData.categories} onChangeSearch={onChangeSearch}
             findItem={findItem} searchStr={searchProdStr}/>
     );

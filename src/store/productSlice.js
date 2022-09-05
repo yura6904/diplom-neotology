@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
+import { fetchRequest } from "./fetchRequest"
 
 const initialState = {
     product: {}
@@ -6,8 +7,8 @@ const initialState = {
 
 //requests to the server
 export const asyncGetProductById = createAsyncThunk("asyncGetProductById", async (id) => {
-    let response = await fetch(`http://localhost:7070/api/items/${id}`)
-    return await response.json()
+    let response = await fetchRequest(`http://localhost:7070/api/items/${id}`)
+    return response
 })
 //TODO
 

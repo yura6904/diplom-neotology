@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice, current } from "@reduxjs/toolkit"
+import { fetchRequest } from "./fetchRequest"
 
 const initialState = {
     cart: [],
@@ -14,7 +15,7 @@ const initialState = {
 
 //requests to the server
 export const asyncFormOrder = createAsyncThunk("asyncFormOrder", async (order) => {
-    let response = await fetch('http://localhost:7070/api/order', {
+    let response = await fetchRequest('http://localhost:7070/api/order', {
         method: 'POST',
         body: JSON.stringify(order),
         headers: {
@@ -22,7 +23,7 @@ export const asyncFormOrder = createAsyncThunk("asyncFormOrder", async (order) =
             'Content-Type': 'application/json'
         },
     }) 
-    return await response.json()
+    return await response
 })
 
 const cartSlice = createSlice({
@@ -35,7 +36,6 @@ const cartSlice = createSlice({
                 cart: state.cart.concat(action.payload),
                 cartCount: window.localStorage.length
             }
-            //void(state.cart.push(action.payload)) //почему тут void решает проблему, я так и не понял
         },
         formOrder(state, action) {
             state.order = action.payload

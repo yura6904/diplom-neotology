@@ -2,28 +2,39 @@ import { useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { CountCartContext } from '../../App';
 import { asyncFormOrder, deleteProdFromOrder, formOrder } from '../../store/cartSlice';
+import { asyncGetProductById } from '../../store/productSlice';
 import Cart from './Cart';
 
 function CartContainer() {
     const cartData = useSelector(state => state.cartData)
+    const productData = useSelector(state => state.productData.product)
     const [sumPrice, setSumPrice] = useState(0)
     const [userTelephone, setUserTelephone] = useState()
     const [userAddress, setUserAddress] = useState()
     const [userAgreement, setUserAgreement] = useState(false)
-    const dispatch = useDispatch()
     const [cartProducts, setCartProducts] = useState([])
-    
+    const dispatch = useDispatch()
+
     const {countCart, changeCount} = useContext(CountCartContext)
 
     useEffect(() => {
-        let price = 0
+        //одиночные запросы на серввер гет по ид из локалсторедж
+        getProductsFromServer()
+    }, [])
+    
+    useEffect(() => {
+        changeCount(window.localStorage.length)
+    })
+
+    const getProductsFromServer = async () => {
         let prods = []
+        let price = 0
 
         for (let i = 0; i < window.localStorage.length; i++) {
-            prods.push(JSON.parse(window.localStorage.getItem(window.localStorage.key(i))))
+            let localItem = JSON.parse(window.localStorage.getItem(window.localStorage.key(i)))
+            await dispatch(asyncGetProductById(localItem.id))
+            prods.push(productData)
         }
-        setCartProducts(prods)
-
         if (prods.length > 0) {
             prods.map((p, id) => {
                 price += p.price * p.count
@@ -33,12 +44,8 @@ function CartContainer() {
         else {
             setSumPrice(0)
         }
-        
-    }, [])
-    useEffect(() => {
-        changeCount(window.localStorage.length)
-    })
-
+        setCartProducts(prods)
+    }
     const formNewOrderHandler = () => {
         let items = []
         for (let i = 0; i < window.localStorage.length; i++) {
