@@ -18,11 +18,16 @@ function App() {
   const [searchProdStr, setSearchProdStr] = useState('')
 
   const changeCount = () => {
-    setCountCart(window.localStorage.length)
+    setCountCart(JSON.parse(window.localStorage.getItem('cart')).length)
   }
+
   const changeSearchProd = (str) => {
     setSearchProdStr(str)
   }
+
+  useEffect(() => {
+    window.localStorage.cart ? changeCount() : window.localStorage.setItem('cart', JSON.stringify([]))
+  }, [])
 
   return (
     <div className="App">
@@ -46,7 +51,6 @@ function App() {
 
 /** TODO: 
   * настроить верстку
-  * оформление заказа проблема с запросом
   * переделать корзину - при иоткрытии делается запрос гет на сервер с ид товаров, где берется актуальная цена
 */
 

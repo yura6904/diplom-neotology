@@ -78,7 +78,8 @@ function Product(props) {
                                                     manufacturer: props.info.manufacturer,
                                                     sku: props.info.sku,
                                                     price: props.info.price,
-                                                    sumPrice: props.amountOfProd * props.info.price
+                                                    sumPrice: props.amountOfProd * props.info.price,
+                                                    sizes: props.info.sizes
                                                 })
                                                 props.routeChange()
                                             }}>

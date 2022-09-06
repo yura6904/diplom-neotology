@@ -2,12 +2,12 @@ import { useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { CountCartContext } from '../../App';
 import { asyncFormOrder, deleteProdFromOrder, formOrder } from '../../store/cartSlice';
-import { asyncGetProductById } from '../../store/productSlice';
+import { fetchRequest } from "../../store/fetchRequest"
+
 import Cart from './Cart';
 
 function CartContainer() {
     const cartData = useSelector(state => state.cartData)
-    const productData = useSelector(state => state.productData.product)
     const [sumPrice, setSumPrice] = useState(0)
     const [userTelephone, setUserTelephone] = useState()
     const [userAddress, setUserAddress] = useState()
@@ -17,59 +17,58 @@ function CartContainer() {
     const dispatch = useDispatch()
 
     const {countCart, changeCount} = useContext(CountCartContext)
-
+   
     useEffect(() => {
-        //одиночные запросы на серввер гет по ид из локалсторедж
-        getProductsFromServer()
-        let warns = checkActualData()
-        setWarnings(warns)
+        (async () => {
+            let prods = []
+            let warns = []
+            let price = 0
+            let localItems = JSON.parse(window.localStorage.getItem('cart'))
+
+            for (let i = 0; i < localItems.length; i++) {
+                let actualProd = await fetchRequest(`http://localhost:7070/api/items/${localItems[i].id}`)
+                price += actualProd.price * localItems[i].count
+
+                //проверка на соответствие инфы
+                if (actualProd.price !== localItems[i].price) {
+                    warns.push(`Цена товар ${localItems[i].title} поменялась, актуальная цена - ${actualProd.price}`)
+                    localItems[i].price = actualProd.price
+                }
+                prods.push(localItems[i])
+            }
+            window.localStorage.removeItem('cart')
+            window.localStorage.setItem(`cart`, JSON.stringify(localItems))
+            setWarnings(warns)
+            setSumPrice(price)
+            setCartProducts(prods)
+            
+        })()
     }, [])
 
     useEffect(() => {
-        changeCount(window.localStorage.length)
+        changeCount(JSON.parse(window.localStorage.getItem('cart')).length)
     })
 
-    const getProductsFromServer = async () => {
-        let prods = []
-        let price = 0
-
-        for (let i = 0; i < window.localStorage.length; i++) {
-            let localItem = JSON.parse(window.localStorage.getItem(window.localStorage.key(i)))
-            await dispatch(asyncGetProductById(localItem.id))
-            prods.push(productData)
-        }
-        if (prods.length > 0) {
-            prods.map((p, id) => {
-                price += p.price * p.count
-            })
-            setSumPrice(price)
-        }
-        else {
-            setSumPrice(0)
-        }
-        setCartProducts(prods)
-    }
-    //проверка на соответствие инфы
-    const checkActualData = () => {
-        let changesWarning = []
-        for (let i = 0; i < window.localStorage.length; i++) {
-            let localProdFromOrder = JSON.parse(window.localStorage.getItem(window.localStorage.key(i)))
-            if (cartProducts[i].price !== localProdFromOrder.price)
-                changesWarning.push(`Цена товар ${cartProducts[i].title} поменялась, актуальная цена - ${cartProducts[i].price}`)
-            return changesWarning
-        }
-    }
     const formNewOrderHandler = () => {
-        let items = []
-        for (let i = 0; i < window.localStorage.length; i++) {
-            items.push(JSON.parse(window.localStorage.getItem(window.localStorage.key(i))))
-        }
+        let localItems = JSON.parse(window.localStorage.getItem('cart'))
+        let orderItems = []
+
+        localItems.map((i, id) => 
+            orderItems.push(
+                {
+                    id: i.id,
+                    price: i.price,
+                    count: i.count
+                }
+            )
+        )
+
         let fullOrder = {
             owner: { 
                 phone: userTelephone, 
                 address: userAddress
             }, 
-            items: items
+            items: orderItems
         }
         cartData.cart.map((p ,id) => {
             fullOrder.items.push({
@@ -82,21 +81,21 @@ function CartContainer() {
         dispatch(asyncFormOrder(fullOrder))
     }
     const deleteHandler = (id, prodId, size) => {
-        let indexToDelete = ''
+        let localItems = JSON.parse(window.localStorage.getItem('cart'))
         let items = []
-        for (let i = 0; i < window.localStorage.length; i++) {
-            let item = JSON.parse(window.localStorage.getItem(window.localStorage.key(i)))
+        for (let i = 0; i < localItems.length; i++) {
+            let item = localItems[i]
             if ((item.id !== prodId) || item.size.size !== size) {
                 items.push(item)
             }
             else {
-                indexToDelete = i
                 setSumPrice(sumPrice - item.price * item.count)
             }
         }
         setCartProducts(items)        
         dispatch(deleteProdFromOrder(id))
-        window.localStorage.removeItem(window.localStorage.key(indexToDelete))
+        window.localStorage.removeItem('cart')
+        window.localStorage.setItem('cart', JSON.stringify(items))
     }
     const onChangeTelephoneInput = (evt) => {
         setUserTelephone(evt.target.value)

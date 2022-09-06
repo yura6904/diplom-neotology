@@ -17,6 +17,7 @@ function ProductContainer(props) {
     const dispatch = useDispatch()
     const productInfo = useSelector(state => state.productData.product)
 
+
     useEffect(() => {
         async function fetchData() {
             await setLoading(true)
@@ -29,22 +30,25 @@ function ProductContainer(props) {
     const addProdToCart = (prod) => {
         dispatch(addToCart(prod))
         let newProd = {...prod}
-        for (let i = 0; i < window.localStorage.length; i++) {
-            let item = JSON.parse(window.localStorage.getItem(window.localStorage.key(i)))
+        let items = JSON.parse(window.localStorage.getItem('cart'))
 
-            if (prod.id === (item.id)) {
-                if (prod.size.size === item.size.size) {
-                    newProd.count = item.count + prod.count
-                    window.localStorage.removeItem(window.localStorage.key(i))
+        for (let i = 0; i < items.length; i++) {
+
+            if (prod.id === (items[i].id)) {
+                if (prod.size.size === items[i].size.size) {
+                    items[i].count += prod.count
+                    window.localStorage.removeItem('cart')
+                    window.localStorage.setItem('cart', JSON.stringify(items))
                     break
                 }
                 else {
                     break
                 }
-
             }
         }
-        window.localStorage.setItem(`prod-${prod.id}-size-${prod.size.size}`, JSON.stringify(newProd))
+        items.push(newProd)
+        window.localStorage.removeItem('cart')
+        window.localStorage.setItem('cart', JSON.stringify(items))
     }
     const chooseSizeHandler = (prod) => {
         setSize(prod)

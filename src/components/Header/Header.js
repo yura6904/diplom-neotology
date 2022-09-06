@@ -13,7 +13,7 @@ function Header() {
     const dispatch = useDispatch()
 
     useEffect(() => {
-        changeCount(window.localStorage.length)
+        changeCount(JSON.parse(window.localStorage.getItem('cart')).length)
     })
 
     const displayInputHandler = () => {

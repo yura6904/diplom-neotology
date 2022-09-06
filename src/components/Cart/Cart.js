@@ -3,6 +3,7 @@ import Banner from '../Banner/Banner';
 import '../css/style.css';
 
 function Cart(props) {
+    
   return (
     <div className="container">
         <div className="row">
@@ -14,7 +15,7 @@ function Cart(props) {
                     <div>
                         <h4>Изменения информации:</h4>
                         {props.warnings.map((w, id) => (
-                            <p>{w}</p>
+                            <p key={id}>{w}</p>
                         ))}
                     </div>
                     
@@ -36,17 +37,19 @@ function Cart(props) {
                             props.cartData ? 
                                 props.cartData[0] !== null ? 
                                     props.cartData.length > 0 ? props.cartData.map(
-                                        (p, id) =>
+                                        (p, id) => (p.price ? (
                                             <tr key={id}>
                                                 <td scope="row">{id+1}</td>
                                                 <td><NavLink to={`/products/product/${p.id}`}>{p.title}</NavLink></td>
-                                                <td>{p.size.size}</td>
+                                                <td>{p.sizes.size}</td>
                                                 <td>{p.count}</td>
                                                 <td>{p.price}</td>
                                                 <td>{p.price*p.count}</td>
                                                 <td><button className="btn btn-outline-danger btn-sm"
                                                 onClick={() => {props.deleteHandler(id, p.id, p.size.size)}}>Удалить</button></td>
                                             </tr>
+                                        ) : null)
+                                            
                                     ) : (<tr>
                                             <td>Корзина пуста.</td>
                                         </tr>)
@@ -64,7 +67,7 @@ function Cart(props) {
             <section className="order">
                 <h2 className="text-center">Оформить заказ</h2>
                 <div className="card" style={{maxWidth: '30em', margin: '0 auto'}}>
-                    <form className="card-body">
+                    <form className="card-body" onSubmit={evt => evt.preventDefault()}>
                         <div className="form-group">
                         <label htmlFor="phone">Телефон</label>
                         <input className="form-control" id="phone" 

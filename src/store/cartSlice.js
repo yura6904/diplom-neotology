@@ -23,7 +23,6 @@ export const asyncFormOrder = createAsyncThunk("asyncFormOrder", async (order) =
             'Content-Type': 'application/json'
         },
     }) 
-    return await response
 })
 
 const cartSlice = createSlice({
@@ -34,7 +33,8 @@ const cartSlice = createSlice({
             return {
                 ...state,
                 cart: state.cart.concat(action.payload),
-                cartCount: window.localStorage.length
+                cartCount: JSON.parse(window.localStorage.getItem('cart')).length
+
             }
         },
         formOrder(state, action) {
