@@ -5,7 +5,6 @@ const initialState = {
     product: {}
 }
 
-//requests to the server
 export const asyncGetProductById = createAsyncThunk("asyncGetProductById", async (id) => {
     let response = await fetchRequest(`http://localhost:7070/api/items/${id}`)
     return response
@@ -21,7 +20,5 @@ const productSlice = createSlice({
         })
     }
 })
-
-//export const {  } = productSlice.actions
 
 export default productSlice.reducer

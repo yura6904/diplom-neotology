@@ -47,7 +47,6 @@ function CatalogContainer() {
     const onChangeSearch = (evt) => {
         changeSearchProd(evt.target.value)
     }
-    //проблемный поиск
     const findItem  = async (evt) => {
         if (evt.key === 'Enter'){
             await dispatch(asyncGetProductBySearch(searchProdStr))}

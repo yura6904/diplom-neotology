@@ -2,7 +2,6 @@ import { useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { CountCartContext } from '../../App';
 import { asyncFormOrder, deleteProdFromOrder, formOrder } from '../../store/cartSlice';
-import { fetchRequest } from "../../store/fetchRequest"
 import { asyncGetProductById } from '../../store/productSlice';
 import store from '../../store/store';
 
@@ -22,7 +21,7 @@ function CartContainer() {
     const {countCart, changeCount} = useContext(CountCartContext)
 
     useEffect(() => {
-        changeCount(JSON.parse(window.localStorage.getItem('cart')).length) //cartData.cart.length
+        changeCount(JSON.parse(window.localStorage.getItem('cart')).length)
     })
    
     useEffect(() => {
@@ -36,13 +35,10 @@ function CartContainer() {
                 cartData.cart
 
             for (let i = 0; i < cart.length; i++) {
-                //подписаться на изменение продукта
                 await dispatch(asyncGetProductById(cart[i].id))
-                //продукт изменился, берем значение 
                 let actualProd = stateChange() 
                 price += actualProd.price * cart[i].count
 
-                //проверка на соответствие инфы
                 if (actualProd.price !== cart[i].price) {
                     warns.push(`Цена товар ${cart[i].title} поменялась, актуальная цена - ${actualProd.price}`)
                     cart[i].price = actualProd.price
@@ -62,8 +58,8 @@ function CartContainer() {
     }
       
     function stateChange() {
-        let previousValue = productData //состояние до рендера
-        let currentValue = select(store.getState()) //состояние после запроса
+        let previousValue = productData
+        let currentValue = select(store.getState())
         
         if (previousValue !== currentValue) {
             return currentValue
@@ -71,8 +67,6 @@ function CartContainer() {
         return previousValue
     }
       
-    
-
     const formNewOrderHandler = () => {
         let localItems = JSON.parse(window.localStorage.getItem('cart')) //cartData.cart
         let orderItems = []
@@ -143,31 +137,3 @@ function CartContainer() {
 }
 
 export default CartContainer;
-
-
-
-
-/*(async () => {
-            let prods = []
-            let warns = []
-            let price = 0
-            let localItems = JSON.parse(window.localStorage.getItem('cart'))
-
-            for (let i = 0; i < localItems.length; i++) {
-                let actualProd = await fetchRequest(`http://localhost:7070/api/items/${localItems[i].id}`)
-                price += actualProd.price * localItems[i].count
-
-                //проверка на соответствие инфы
-                if (actualProd.price !== localItems[i].price) {
-                    warns.push(`Цена товар ${localItems[i].title} поменялась, актуальная цена - ${actualProd.price}`)
-                    localItems[i].price = actualProd.price
-                }
-                prods.push(localItems[i])
-            }
-            window.localStorage.removeItem('cart')
-            window.localStorage.setItem(`cart`, JSON.stringify(localItems))
-            setWarnings(warns)
-            setSumPrice(price)
-            setCartProducts(prods)
-            
-        })()*/

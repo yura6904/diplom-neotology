@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useEffect, useState } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import './App.css';
 import About from './components/About/About';
@@ -48,11 +48,5 @@ function App() {
     </div>
   );
 }
-
-/** TODO: 
-  * настроить верстку
-  * Что показывать пользователю, если поиск не дал результатов?
-  
-*/
 
 export default App;

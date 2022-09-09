@@ -58,7 +58,7 @@ const indexSlice = createSlice({
             state.activeCategory = action.payload
         }
     },
-    //getting data from api
+
     extraReducers: (builder) => {
         builder.addCase(asyncGetIndexData.fulfilled, (state, action) => {
             state.data = action.payload

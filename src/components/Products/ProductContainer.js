@@ -35,8 +35,8 @@ function ProductContainer(props) {
     }
       
     function stateChange() {
-        let previousValue = cartData //состояние до рендера
-        let currentValue = select(store.getState()) //состояние после запроса
+        let previousValue = cartData
+        let currentValue = select(store.getState())
         
         if (previousValue !== currentValue) {
             return currentValue
@@ -45,15 +45,14 @@ function ProductContainer(props) {
     }
 
     const addProdToCart = (prod) => {
-        //подписываемся на изменение корзины
         dispatch(addToCart(prod))
-        //поменялось, значит меняем локалстор
+
         let stateItems = stateChange()
         let newProdFromState = stateItems[stateItems.length - 1]
-        //let changedProd = {...prod}
         let prodWasAdded = false
         let localCart = JSON.parse(window.localStorage.getItem('cart'))
         let updatedProdsArray = []
+        
         if (localCart.length > 0) {
             for (let i = 0; i < localCart.length; i++) {
                 if (newProdFromState.id === localCart[i].id){

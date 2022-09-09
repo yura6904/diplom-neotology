@@ -13,7 +13,6 @@ const initialState = {
     cartCount: 0
 }
 
-//requests to the server
 export const asyncFormOrder = createAsyncThunk("asyncFormOrder", async (order) => {
     let response = await fetchRequest('http://localhost:7070/api/order', {
         method: 'POST',
