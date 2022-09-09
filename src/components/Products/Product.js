@@ -47,10 +47,14 @@ function Product(props) {
                                         </table>
                                         <div className="text-center">
                                             <p>Размеры в наличии: 
-                                                {props.info.sizes.map((s, id) => (
-                                                    <span className={`catalog-item-size ${props.size === id ? 'selected' : ''}`} key={id}
-                                                    onClick={() => {props.chooseSizeHandler(id)}}>{s.size}</span>
-                                                ))}
+                                                {props.info.sizes.map((s, id) => {
+                                                    if (s.avalible) {
+                                                        return (
+                                                            <span className={`catalog-item-size ${props.size === id ? 'selected' : ''}`} key={id}
+                                                            onClick={() => {props.chooseSizeHandler(id)}}>{s.size}</span>
+                                                        )
+                                                    }
+                                                })}
                                             </p>
                                             <p>Количество: <span className="btn-group btn-group-sm pl-2">
                                                     <button className="btn btn-secondary" onClick={() => {

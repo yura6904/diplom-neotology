@@ -3,11 +3,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { CountCartContext } from '../../App';
 import { asyncFormOrder, deleteProdFromOrder, formOrder } from '../../store/cartSlice';
 import { fetchRequest } from "../../store/fetchRequest"
+import { asyncGetProductById } from '../../store/productSlice';
+import store from '../../store/store';
 
 import Cart from './Cart';
 
 function CartContainer() {
     const cartData = useSelector(state => state.cartData)
+    const productData = useSelector(state => state.productData)
     const [sumPrice, setSumPrice] = useState(0)
     const [userTelephone, setUserTelephone] = useState()
     const [userAddress, setUserAddress] = useState()
@@ -17,27 +20,35 @@ function CartContainer() {
     const dispatch = useDispatch()
 
     const {countCart, changeCount} = useContext(CountCartContext)
+
+    useEffect(() => {
+        changeCount(JSON.parse(window.localStorage.getItem('cart')).length) //cartData.cart.length
+    })
    
     useEffect(() => {
         (async () => {
             let prods = []
             let warns = []
             let price = 0
-            let localItems = JSON.parse(window.localStorage.getItem('cart'))
+            
+            let cart = JSON.parse(window.localStorage.getItem('cart')).length > 0 ? 
+                JSON.parse(window.localStorage.getItem('cart')) :
+                cartData.cart
 
-            for (let i = 0; i < localItems.length; i++) {
-                let actualProd = await fetchRequest(`http://localhost:7070/api/items/${localItems[i].id}`)
-                price += actualProd.price * localItems[i].count
+            for (let i = 0; i < cart.length; i++) {
+                //подписаться на изменение продукта
+                await dispatch(asyncGetProductById(cart[i].id))
+                //продукт изменился, берем значение 
+                let actualProd = stateChange() 
+                price += actualProd.price * cart[i].count
 
                 //проверка на соответствие инфы
-                if (actualProd.price !== localItems[i].price) {
-                    warns.push(`Цена товар ${localItems[i].title} поменялась, актуальная цена - ${actualProd.price}`)
-                    localItems[i].price = actualProd.price
+                if (actualProd.price !== cart[i].price) {
+                    warns.push(`Цена товар ${cart[i].title} поменялась, актуальная цена - ${actualProd.price}`)
+                    cart[i].price = actualProd.price
                 }
-                prods.push(localItems[i])
+                prods.push(cart[i])
             }
-            window.localStorage.removeItem('cart')
-            window.localStorage.setItem(`cart`, JSON.stringify(localItems))
             setWarnings(warns)
             setSumPrice(price)
             setCartProducts(prods)
@@ -45,12 +56,25 @@ function CartContainer() {
         })()
     }, [])
 
-    useEffect(() => {
-        changeCount(JSON.parse(window.localStorage.getItem('cart')).length)
-    })
+    function select(state) {
+        console.log(state.productData.product)
+        return state.productData.product
+    }
+      
+    function stateChange() {
+        let previousValue = productData //состояние до рендера
+        let currentValue = select(store.getState()) //состояние после запроса
+        
+        if (previousValue !== currentValue) {
+            return currentValue
+        }
+        return previousValue
+    }
+      
+    
 
     const formNewOrderHandler = () => {
-        let localItems = JSON.parse(window.localStorage.getItem('cart'))
+        let localItems = JSON.parse(window.localStorage.getItem('cart')) //cartData.cart
         let orderItems = []
 
         localItems.map((i, id) => 
@@ -81,7 +105,7 @@ function CartContainer() {
         dispatch(asyncFormOrder(fullOrder))
     }
     const deleteHandler = (id, prodId, size) => {
-        let localItems = JSON.parse(window.localStorage.getItem('cart'))
+        let localItems = JSON.parse(window.localStorage.getItem('cart'))//cartData.cart
         let items = []
         for (let i = 0; i < localItems.length; i++) {
             let item = localItems[i]
@@ -94,8 +118,8 @@ function CartContainer() {
         }
         setCartProducts(items)        
         dispatch(deleteProdFromOrder(id))
-        window.localStorage.removeItem('cart')
-        window.localStorage.setItem('cart', JSON.stringify(items))
+        window.localStorage.removeItem('cart')//cartData.cart
+        window.localStorage.setItem('cart', JSON.stringify(items))//cartData.cart
     }
     const onChangeTelephoneInput = (evt) => {
         setUserTelephone(evt.target.value)
@@ -106,6 +130,9 @@ function CartContainer() {
     const onChangeAgreementInput = (evt) => {
         setUserAgreement(evt.target.value === "on" ? true : false)
     }
+
+    const unsubscribe = store.subscribe(stateChange)
+    unsubscribe()
 
     return (
         <Cart cartData={cartProducts ? cartProducts : []} sumPrice={sumPrice} warnings={warnings}
@@ -120,3 +147,27 @@ export default CartContainer;
 
 
 
+/*(async () => {
+            let prods = []
+            let warns = []
+            let price = 0
+            let localItems = JSON.parse(window.localStorage.getItem('cart'))
+
+            for (let i = 0; i < localItems.length; i++) {
+                let actualProd = await fetchRequest(`http://localhost:7070/api/items/${localItems[i].id}`)
+                price += actualProd.price * localItems[i].count
+
+                //проверка на соответствие инфы
+                if (actualProd.price !== localItems[i].price) {
+                    warns.push(`Цена товар ${localItems[i].title} поменялась, актуальная цена - ${actualProd.price}`)
+                    localItems[i].price = actualProd.price
+                }
+                prods.push(localItems[i])
+            }
+            window.localStorage.removeItem('cart')
+            window.localStorage.setItem(`cart`, JSON.stringify(localItems))
+            setWarnings(warns)
+            setSumPrice(price)
+            setCartProducts(prods)
+            
+        })()*/

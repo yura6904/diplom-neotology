@@ -41,7 +41,7 @@ function Cart(props) {
                                             <tr key={id}>
                                                 <td scope="row">{id+1}</td>
                                                 <td><NavLink to={`/products/product/${p.id}`}>{p.title}</NavLink></td>
-                                                <td>{p.sizes.size}</td>
+                                                <td>{p.size.size}</td>
                                                 <td>{p.count}</td>
                                                 <td>{p.price}</td>
                                                 <td>{p.price*p.count}</td>

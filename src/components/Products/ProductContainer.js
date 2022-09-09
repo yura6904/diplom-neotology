@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router';
-import { addToCart } from '../../store/cartSlice';
+import { addToCart, setNewCart } from '../../store/cartSlice';
 import { asyncGetProductById } from '../../store/productSlice';
 import Product from './Product';
 import { useNavigate } from "react-router-dom";
+import store from '../../store/store';
 
 
 function ProductContainer(props) {
@@ -16,6 +17,7 @@ function ProductContainer(props) {
 
     const dispatch = useDispatch()
     const productInfo = useSelector(state => state.productData.product)
+    const cartData = useSelector(state => state.cartData)
 
 
     useEffect(() => {
@@ -27,29 +29,64 @@ function ProductContainer(props) {
         fetchData()
     }, [])
 
+    function select(state) {
+        console.log(state.cartData.cart)
+        return state.cartData.cart
+    }
+      
+    function stateChange() {
+        let previousValue = cartData //состояние до рендера
+        let currentValue = select(store.getState()) //состояние после запроса
+        
+        if (previousValue !== currentValue) {
+            return currentValue
+        }
+        return previousValue
+    }
+
     const addProdToCart = (prod) => {
+        //подписываемся на изменение корзины
         dispatch(addToCart(prod))
-        let newProd = {...prod}
-        let items = JSON.parse(window.localStorage.getItem('cart'))
+        //поменялось, значит меняем локалстор
+        let stateItems = stateChange()
+        let changedProd = {...prod}
+        let newCart = []
+        let prodWasAdded = false
+        let localCart = JSON.parse(window.localStorage.getItem('cart'))
 
-        for (let i = 0; i < items.length; i++) {
-
-            if (prod.id === (items[i].id)) {
-                if (prod.size.size === items[i].size.size) {
-                    items[i].count += prod.count
-                    window.localStorage.removeItem('cart')
-                    window.localStorage.setItem('cart', JSON.stringify(items))
-                    break
+        if (stateItems.length > 1) {
+            for (let i = 0; i < stateItems.length; i++) {
+                if (i !== stateItems.length - 1) {
+                    if (prod.id === (cartData.cart[i].id)) {
+                        if (prod.size.size === stateItems[i].size.size) {
+                            let newCount = stateItems[i].count + prod.count
+                            changedProd.count = newCount
+                            newCart.push(changedProd)
+                            prodWasAdded = true
+                            continue
+                        }
+                        else {
+                            newCart.push(stateItems[i])
+                            continue
+                        }
+                    }
+                    newCart.push(stateItems[i])
                 }
-                else {
-                    break
+                else if (prodWasAdded === false) {
+                    newCart.push(stateItems[i])
                 }
             }
         }
-        items.push(newProd)
+        else {
+            newCart.push(prod)
+        }
+        let result = newCart.concat(localCart)
+        
         window.localStorage.removeItem('cart')
-        window.localStorage.setItem('cart', JSON.stringify(items))
+        window.localStorage.setItem(`cart`, JSON.stringify(result))
+        dispatch(setNewCart(result))
     }
+    
     const chooseSizeHandler = (prod) => {
         setSize(prod)
     }
@@ -62,8 +99,10 @@ function ProductContainer(props) {
     }
     const routeChange = () =>{ 
         navigate('/cart')
-      }
+    }
 
+    const unsubscribe = store.subscribe(stateChange)
+    unsubscribe()
     return (
         <Product info={productInfo} addProdToCart={addProdToCart}
             isLoading={loading} chooseSizeHandler={chooseSizeHandler}

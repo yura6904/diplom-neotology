@@ -33,9 +33,15 @@ const cartSlice = createSlice({
             return {
                 ...state,
                 cart: state.cart.concat(action.payload),
-                cartCount: JSON.parse(window.localStorage.getItem('cart')).length
-
+                cartCount: state.cart.length
             }
+        },
+        setNewCart: (state, action) => {
+            return {
+                ...state, 
+                cart: action.payload
+            }
+            
         },
         formOrder(state, action) {
             state.order = action.payload
@@ -58,6 +64,6 @@ const cartSlice = createSlice({
     }
 })
 
-export const { addToCart, formOrder, deleteProdFromOrder } = cartSlice.actions
+export const { addToCart, setNewCart, formOrder, deleteProdFromOrder } = cartSlice.actions
 
 export default cartSlice.reducer
