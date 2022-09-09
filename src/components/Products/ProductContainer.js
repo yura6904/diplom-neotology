@@ -49,42 +49,29 @@ function ProductContainer(props) {
         dispatch(addToCart(prod))
         //поменялось, значит меняем локалстор
         let stateItems = stateChange()
-        let changedProd = {...prod}
-        let newCart = []
+        let newProdFromState = stateItems[stateItems.length - 1]
+        //let changedProd = {...prod}
         let prodWasAdded = false
         let localCart = JSON.parse(window.localStorage.getItem('cart'))
-
-        if (stateItems.length > 1) {
-            for (let i = 0; i < stateItems.length; i++) {
-                if (i !== stateItems.length - 1) {
-                    if (prod.id === (cartData.cart[i].id)) {
-                        if (prod.size.size === stateItems[i].size.size) {
-                            let newCount = stateItems[i].count + prod.count
-                            changedProd.count = newCount
-                            newCart.push(changedProd)
-                            prodWasAdded = true
-                            continue
-                        }
-                        else {
-                            newCart.push(stateItems[i])
-                            continue
-                        }
-                    }
-                    newCart.push(stateItems[i])
+        let updatedProdsArray = []
+        if (localCart.length > 0) {
+            for (let i = 0; i < localCart.length; i++) {
+                if (newProdFromState.id === localCart[i].id){
+                    localCart[i].count += newProdFromState.count
+                    prodWasAdded = true
                 }
-                else if (prodWasAdded === false) {
-                    newCart.push(stateItems[i])
-                }
+                updatedProdsArray.push(localCart[i])
             }
+            if (prodWasAdded === false) {
+                updatedProdsArray.push(prod)
+            }
+
         }
-        else {
-            newCart.push(prod)
-        }
-        let result = newCart.concat(localCart)
+        else updatedProdsArray.push(prod)
         
         window.localStorage.removeItem('cart')
-        window.localStorage.setItem(`cart`, JSON.stringify(result))
-        dispatch(setNewCart(result))
+        window.localStorage.setItem(`cart`, JSON.stringify(updatedProdsArray))
+        dispatch(setNewCart(updatedProdsArray))
     }
     
     const chooseSizeHandler = (prod) => {
