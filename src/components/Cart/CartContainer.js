@@ -11,8 +11,8 @@ function CartContainer() {
     const cartData = useSelector(state => state.cartData)
     const productData = useSelector(state => state.productData)
     const [sumPrice, setSumPrice] = useState(0)
-    const [userTelephone, setUserTelephone] = useState()
-    const [userAddress, setUserAddress] = useState()
+    const [userTelephone, setUserTelephone] = useState('')
+    const [userAddress, setUserAddress] = useState('')
     const [userAgreement, setUserAgreement] = useState(false)
     const [cartProducts, setCartProducts] = useState([])
     const [warnings, setWarnings] = useState([])
@@ -132,7 +132,8 @@ function CartContainer() {
         <Cart cartData={cartProducts ? cartProducts : []} sumPrice={sumPrice} warnings={warnings}
             formNewOrderHandler={formNewOrderHandler} deleteHandler={deleteHandler}
             onChangeTelephoneInput={onChangeTelephoneInput} onChangeAdressInput={onChangeAdressInput}
-            onChangeAgreementInput={onChangeAgreementInput} userAgreement={userAgreement} />
+            onChangeAgreementInput={onChangeAgreementInput} userAgreement={userAgreement} countCart={countCart}
+            userTelephone={userTelephone} userAddress={userAddress}/>
     );
 }
 

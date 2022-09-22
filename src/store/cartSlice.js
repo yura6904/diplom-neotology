@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice, current } from "@reduxjs/toolkit"
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import { fetchRequest } from "./fetchRequest"
 
 const initialState = {
@@ -14,7 +14,7 @@ const initialState = {
 }
 
 export const asyncFormOrder = createAsyncThunk("asyncFormOrder", async (order) => {
-    let response = await fetchRequest('http://localhost:7070/api/order', {
+    await fetchRequest('http://localhost:7070/api/order', {
         method: 'POST',
         body: JSON.stringify(order),
         headers: {
